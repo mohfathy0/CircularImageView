@@ -12,22 +12,17 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+
 import androidx.appcompat.widget.AppCompatImageView;
 
 
 public class MLRoundedImageView extends AppCompatImageView {
     // source : https://gist.github.com/melanke/7158342
 
-
-    public String getStrokeColor() {
-        return StrokeColor;
-    }
-
-    public void setStrokeColor(String strokeColor) {
-        StrokeColor = strokeColor;
-    }
-
-    public String StrokeColor="#000000";
+    public int StrokeWidth = 2;
+    public int StrokeColor;
+    public static int ImageBGColor ;
+    public static float ImageCropSize=2;
 
     public MLRoundedImageView(Context context) {
         super(context);
@@ -37,12 +32,17 @@ public class MLRoundedImageView extends AppCompatImageView {
         super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.MyStrokeColor,
+                R.styleable.MLRoundedImageView,
+
                 0, 0);
 
         try {
 
-            StrokeColor = a.getString(R.styleable.MyStrokeColor_stroke_color);
+            StrokeColor = a.getColor(R.styleable.MLRoundedImageView_stroke_color,Color.BLACK);
+            ImageBGColor=a.getColor(R.styleable.MLRoundedImageView_ImageBGColor, Color.BLACK);
+            StrokeWidth=a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2);
+            //ImageCropSize=(float) (a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2)*0.10f);
+            ImageCropSize=a.getFloat(R.styleable.MLRoundedImageView_ImageCropSize,2);
         } finally {
             a.recycle();
         }
@@ -53,6 +53,7 @@ public class MLRoundedImageView extends AppCompatImageView {
 
 
     }
+
 
 
 
@@ -87,9 +88,9 @@ public class MLRoundedImageView extends AppCompatImageView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        paint.setStrokeWidth(2);
+        paint.setStrokeWidth(StrokeWidth);
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor(StrokeColor));
+        paint.setColor(StrokeColor);
         canvas.drawCircle(w / 2 -0.1f,
                 w / 2 -0.1f, w / 2-1 , paint);
 
@@ -110,8 +111,6 @@ public class MLRoundedImageView extends AppCompatImageView {
         Bitmap output = Bitmap.createBitmap(radius, radius,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-
-        final int color = 0xffa19774;
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, radius, radius);
 
@@ -119,7 +118,7 @@ public class MLRoundedImageView extends AppCompatImageView {
         paint.setFilterBitmap(true);
         paint.setDither(true);
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
+        paint.setColor(ImageBGColor);
         canvas.drawCircle(radius / 2 -0.7f,
                 radius / 2 -0.7f, radius / 2 + 0.1f, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
