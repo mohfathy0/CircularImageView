@@ -39,10 +39,10 @@ public class MLRoundedImageView extends AppCompatImageView {
         try {
 
             StrokeColor = a.getColor(R.styleable.MLRoundedImageView_stroke_color,Color.BLACK);
-            ImageBGColor=a.getColor(R.styleable.MLRoundedImageView_ImageBGColor, Color.BLACK);
-            StrokeWidth=a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2);
+            ImageBGColor=a.getColor(R.styleable.MLRoundedImageView_Image_BGColor, Color.BLACK);
+            StrokeWidth=a.getInt(R.styleable.MLRoundedImageView_Stroke_Width,2);
             //ImageCropSize=(float) (a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2)*0.10f);
-            ImageCropSize=a.getFloat(R.styleable.MLRoundedImageView_ImageCropSize,2);
+            ImageCropSize=a.getFloat(R.styleable.MLRoundedImageView_Image_CropSize,2);
         } finally {
             a.recycle();
         }

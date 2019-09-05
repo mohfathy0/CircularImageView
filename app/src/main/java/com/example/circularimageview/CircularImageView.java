@@ -16,7 +16,10 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class CircularImageView extends AppCompatImageView {
+    public int StrokeWidth ;
+    public int StrokeColor;
     public static int ImageBGColor ;
+    public static float ImageCropSize=2;
 
     public CircularImageView(Context context) {
         super(context);
@@ -26,15 +29,17 @@ public class CircularImageView extends AppCompatImageView {
         super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.MLRoundedImageView,
+                R.styleable.CircularImageViewAttrs,
 
                 0, 0);
 
         try {
 
-
-            ImageBGColor=a.getColor(R.styleable.MLRoundedImageView_ImageBGColor, Color.BLACK);
-
+            StrokeColor = a.getColor(R.styleable.CircularImageViewAttrs_strokeColor,Color.BLACK);
+            ImageBGColor=a.getColor(R.styleable.CircularImageViewAttrs_imageBGColor, Color.BLACK);
+            StrokeWidth=a.getInt(R.styleable.CircularImageViewAttrs_strokeWidth,0);
+            //ImageCropSize=(float) (a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2)*0.10f);
+           // ImageCropSize=a.getFloat(R.styleable.MLRoundedImageView_ImageCropSize,2);
         } finally {
             a.recycle();
         }
@@ -70,11 +75,11 @@ public class CircularImageView extends AppCompatImageView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        paint.setStrokeWidth(20);
+        paint.setStrokeWidth(StrokeWidth);
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.BLACK);
+        paint.setColor(StrokeColor);
         //canvas.drawCircle(getWidth() / 2 -0.1f, getWidth() / 2 -0.1f, getWidth() / 2-1 , paint);
-        canvas.drawCircle(getWidth()/2,getHeight()/2,(smallestSide)/2, paint);
+        canvas.drawCircle(getWidth()/2,getHeight()/2,(smallestSide)/2-StrokeWidth/2, paint);
         // end of stroke
     }
     public static Bitmap getCroppedBitmap(Bitmap bitmap,int ImageViewSmallestSide,int w,int h){

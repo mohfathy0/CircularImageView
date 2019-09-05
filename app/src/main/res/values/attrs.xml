@@ -2,8 +2,15 @@
 <resources>
     <declare-styleable name="MLRoundedImageView">
         <attr name="stroke_color" format="color"/>
-        <attr name="ImageBGColor" format="color"/>
-        <attr name="StrokeWidth" format="integer"/>
-        <attr name="ImageCropSize" format="float"/>
+        <attr name="Image_BGColor" format="color"/>
+        <attr name="Stroke_Width" format="integer"/>
+        <attr name="Image_CropSize" format="float"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularImageViewAttrs">
+        <attr name="strokeColor" format="color"/>
+        <attr name="imageBGColor" format="color"/>
+        <attr name="strokeWidth" format="integer"/>
+        <attr name="imageCropSize" format="float"/>
     </declare-styleable>
 </resources>
