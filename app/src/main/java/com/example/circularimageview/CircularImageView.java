@@ -1,8 +1,14 @@
 package com.example.circularimageview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -10,12 +16,28 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class CircularImageView extends AppCompatImageView {
+    public static int ImageBGColor ;
+
     public CircularImageView(Context context) {
         super(context);
     }
 
     public CircularImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.MLRoundedImageView,
+
+                0, 0);
+
+        try {
+
+
+            ImageBGColor=a.getColor(R.styleable.MLRoundedImageView_ImageBGColor, Color.BLACK);
+
+        } finally {
+            a.recycle();
+        }
     }
 
     public CircularImageView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -24,7 +46,7 @@ public class CircularImageView extends AppCompatImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+     //   super.onDraw(canvas);
         Drawable drawable = getDrawable();
 
         if (drawable == null) {
@@ -35,22 +57,60 @@ public class CircularImageView extends AppCompatImageView {
             return;
         }
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bitmapCopy=b.copy(Bitmap.Config.ARGB_8888, true);
+       int  smallestSide=Math.min(getWidth(),getHeight());
+        Bitmap roundBitmap = getCroppedBitmap(bitmapCopy, smallestSide,getWidth(),getHeight());
 
-        int ImageViewWidth = getWidth(), ImageViewHight = getHeight();
+        canvas.drawBitmap(roundBitmap, ((getWidth()/2)-(roundBitmap.getWidth()/2)), (getHeight()/2)-(roundBitmap.getHeight()/2), null);
 
-       int  smallest=Math.min(getWidth(),getHeight());
-        Bitmap roundBitmap = getCroppedBitmap(b, smallest);
-        canvas.drawBitmap(roundBitmap, 0, 0, null);
 
+//        // stroke
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        paint.setStrokeWidth(20);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.BLACK);
+        //canvas.drawCircle(getWidth() / 2 -0.1f, getWidth() / 2 -0.1f, getWidth() / 2-1 , paint);
+        canvas.drawCircle(getWidth()/2,getHeight()/2,(smallestSide)/2, paint);
+        // end of stroke
     }
-    public static Bitmap getCroppedBitmap(Bitmap bitmap,int ImageViewSmallest){
+    public static Bitmap getCroppedBitmap(Bitmap bitmap,int ImageViewSmallestSide,int w,int h){
 
-        if (bitmap.getWidth()!=ImageViewSmallest || bitmap.getHeight()!=ImageViewSmallest){
-            float smallest=Math.min(bitmap.getWidth(),bitmap.getHeight());
-            float factor = smallest/ImageViewSmallest;
+        Bitmap resizedBitmap=resizeImageIfNeeded(bitmap,ImageViewSmallestSide);
+        //We give it the smallest side twice because we need to make it in shape of square and not go out of the border of the image view
+        Bitmap output = Bitmap.createBitmap(ImageViewSmallestSide, ImageViewSmallestSide, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        int rad = ImageViewSmallestSide/2;
+        Rect rect = new Rect(0,0, ImageViewSmallestSide, ImageViewSmallestSide);
+        Rect rectSrc  = new Rect(resizedBitmap.getWidth()/2-rad, resizedBitmap.getHeight()/2-rad,resizedBitmap.getWidth()/2+rad, resizedBitmap.getHeight()/2+rad);
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(ImageBGColor);
+        canvas.drawCircle(ImageViewSmallestSide/2,ImageViewSmallestSide/2,(ImageViewSmallestSide/2),paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(resizedBitmap,rect ,rect,paint);
+
+
+
+        return output;
+    }
+
+    private static Bitmap resizeImageIfNeeded(Bitmap bitmap, int ImageViewSmallestSide) {
+        Bitmap sbmp;
+        if (bitmap.getWidth()!=ImageViewSmallestSide || bitmap.getHeight()!=ImageViewSmallestSide){
+        float smallest=Math.min(bitmap.getWidth(),bitmap.getHeight());
+        float resizingFactor = smallest/ImageViewSmallestSide;
+            sbmp= Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() / resizingFactor), (int)(bitmap.getHeight() / resizingFactor), false);
         }
-
-        return null;
+        else {
+            sbmp=bitmap;
+        }
+        return sbmp;
     }
 }

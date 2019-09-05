@@ -81,8 +81,21 @@ public class MLRoundedImageView extends AppCompatImageView {
 
         Bitmap roundBitmap = getCroppedBitmap(bitmap, w);
         canvas.drawBitmap(roundBitmap, 0, 0, null);
-// stroke
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // stroke
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -91,9 +104,7 @@ public class MLRoundedImageView extends AppCompatImageView {
         paint.setStrokeWidth(StrokeWidth);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(StrokeColor);
-        canvas.drawCircle(w / 2 -0.1f,
-                w / 2 -0.1f, w / 2-1 , paint);
-
+        canvas.drawCircle(w / 2 -0.1f, w / 2 -0.1f, w / 2-1 , paint);
         // end of stroke
     }
 
@@ -108,19 +119,16 @@ public class MLRoundedImageView extends AppCompatImageView {
             sbmp = bmp;
         }
 
-        Bitmap output = Bitmap.createBitmap(radius, radius,
-                Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(radius, radius, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, radius, radius);
-
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(ImageBGColor);
-        canvas.drawCircle(radius / 2 -0.7f,
-                radius / 2 -0.7f, radius / 2 + 0.1f, paint);
+        canvas.drawCircle(radius / 2 -0.7f,radius / 2 -0.7f, radius / 2 + 0.1f, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(sbmp, rect, rect, paint);
 
