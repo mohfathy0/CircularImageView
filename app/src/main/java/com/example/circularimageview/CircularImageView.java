@@ -19,7 +19,6 @@ public class CircularImageView extends AppCompatImageView {
     public int StrokeWidth ;
     public int StrokeColor;
     public static int ImageBGColor ;
-    public static float ImageCropSize=2;
 
     public CircularImageView(Context context) {
         super(context);
@@ -29,17 +28,11 @@ public class CircularImageView extends AppCompatImageView {
         super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.CircularImageViewAttrs,
-
-                0, 0);
-
+                R.styleable.CircularImageViewAttrs, 0, 0);
         try {
-
             StrokeColor = a.getColor(R.styleable.CircularImageViewAttrs_strokeColor,Color.BLACK);
             ImageBGColor=a.getColor(R.styleable.CircularImageViewAttrs_imageBGColor, Color.BLACK);
             StrokeWidth=a.getInt(R.styleable.CircularImageViewAttrs_strokeWidth,0);
-            //ImageCropSize=(float) (a.getInt(R.styleable.MLRoundedImageView_StrokeWidth,2)*0.10f);
-           // ImageCropSize=a.getFloat(R.styleable.MLRoundedImageView_ImageCropSize,2);
         } finally {
             a.recycle();
         }
@@ -51,9 +44,8 @@ public class CircularImageView extends AppCompatImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-     //   super.onDraw(canvas);
+        //   super.onDraw(canvas);
         Drawable drawable = getDrawable();
-
         if (drawable == null) {
             return;
         }
@@ -63,13 +55,10 @@ public class CircularImageView extends AppCompatImageView {
         }
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
         Bitmap bitmapCopy=b.copy(Bitmap.Config.ARGB_8888, true);
-       int  smallestSide=Math.min(getWidth(),getHeight());
+        int  smallestSide=Math.min(getWidth(),getHeight());
         Bitmap roundBitmap = getCroppedBitmap(bitmapCopy, smallestSide,getWidth(),getHeight());
-
         canvas.drawBitmap(roundBitmap, ((getWidth()/2)-(roundBitmap.getWidth()/2)), (getHeight()/2)-(roundBitmap.getHeight()/2), null);
-
-
-//        // stroke
+       // stroke
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -78,7 +67,6 @@ public class CircularImageView extends AppCompatImageView {
         paint.setStrokeWidth(StrokeWidth);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(StrokeColor);
-        //canvas.drawCircle(getWidth() / 2 -0.1f, getWidth() / 2 -0.1f, getWidth() / 2-1 , paint);
         canvas.drawCircle(getWidth()/2,getHeight()/2,(smallestSide)/2-StrokeWidth/2, paint);
         // end of stroke
     }
@@ -89,9 +77,7 @@ public class CircularImageView extends AppCompatImageView {
         Bitmap output = Bitmap.createBitmap(ImageViewSmallestSide, ImageViewSmallestSide, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
-        int rad = ImageViewSmallestSide/2;
         Rect rect = new Rect(0,0, ImageViewSmallestSide, ImageViewSmallestSide);
-        Rect rectSrc  = new Rect(resizedBitmap.getWidth()/2-rad, resizedBitmap.getHeight()/2-rad,resizedBitmap.getWidth()/2+rad, resizedBitmap.getHeight()/2+rad);
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
@@ -109,8 +95,8 @@ public class CircularImageView extends AppCompatImageView {
     private static Bitmap resizeImageIfNeeded(Bitmap bitmap, int ImageViewSmallestSide) {
         Bitmap sbmp;
         if (bitmap.getWidth()!=ImageViewSmallestSide || bitmap.getHeight()!=ImageViewSmallestSide){
-        float smallest=Math.min(bitmap.getWidth(),bitmap.getHeight());
-        float resizingFactor = smallest/ImageViewSmallestSide;
+            float smallest=Math.min(bitmap.getWidth(),bitmap.getHeight());
+            float resizingFactor = smallest/ImageViewSmallestSide;
             sbmp= Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() / resizingFactor), (int)(bitmap.getHeight() / resizingFactor), false);
         }
         else {
